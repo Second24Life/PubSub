@@ -4,8 +4,8 @@ from abc import ABCMeta, abstractmethod
 class Publisher():
 	__metaclass__=ABCMeta
 	
-	def add_news(self, channel, news):
-		channel.publish(news)
+	def add_news(self, channel, nameRoom, news):
+		channel.publish(nameRoom, news)
 
 # Абстрактный класс для канала событий	
 # метод publish добавляет новых наблюдателей в комнату
@@ -13,10 +13,10 @@ class Publisher():
 class EventChannel():
 	__metaclass__=ABCMeta
 
-	def subscribe(self, nameRoom='CommonChat', subscriber):
-		self.rooms[nameRoome].append(subscriber)
+	def subscribe(self, nameRoom, subscriber):
+		self.rooms[nameRoom].append(subscriber)
 
-	def publish(self, nameRoom='CommonChat', message):
+	def publish(self, nameRoom, message):
 		for subscriber in self.rooms[nameRoom]:
 			subscriber.update(message + '\nP.s. {}\n{}'.format(nameRoom, '-'*11))
 
@@ -31,7 +31,6 @@ class Subscriber():
 		pass
 
 # Класс газеты и немного минимум информации
-# метод add_news вызывает метод notify из абстрактного класса, чтобы сообщить о новости 
 class Newspaper(Publisher):
 
 	def __init__(self, name, yearOfCreate):
@@ -39,10 +38,12 @@ class Newspaper(Publisher):
 		self.yearOfCreate = yearOfCreate
 
 class ChatRoom(EventChannel):
+	nameRoom = 'CommonChat'
+	rooms = {}
 
-	def __init__(self, name):
-		self.name = name
-		self.rooms = []
+	def __init__(self, nameRoom):
+		self.nameRoom = nameRoom
+		self.rooms[nameRoom] = []
 
 # Класс горожанина и немного информации о нем
 # метод update переопределен
@@ -64,13 +65,13 @@ chatRoomCar = ChatRoom('CarNews')
 maksim = Citizen('Max', 20)
 igor = Citizen('Igor', 20)
 # Подписываем созданных горожан на газету
-chatRoomIT.subscribe(maksim)
-chatRoomCar.subscribe(maksim)
-chatRoomIT.subscribe(igor)
+chatRoomIT.subscribe(chatRoomIT.nameRoom, maksim)
+chatRoomCar.subscribe(chatRoomCar.nameRoom, maksim)
+chatRoomIT.subscribe(chatRoomIT.nameRoom, igor)
 
 # Газета добавляет новую новость и сообщает о ней подписчикам
-newspaper.add_news(chatRoomIT, 'Good news came to our city ...')
-newspaper.add_news(chatRoomCar, 'Gasoline has again risen in price.')
+newspaper.add_news(chatRoomIT, chatRoomIT.nameRoom, 'Good news came to our city ...')
+newspaper.add_news(chatRoomCar, chatRoomCar.nameRoom, 'Gasoline has again risen in price.')
 
 # Газета добавляет новость о отписке своего подпичсика
-newspaper.add_news(chatRoomIT, 'We lost the Igor.')
+newspaper.add_news(chatRoomIT, chatRoomIT.nameRoom, 'We lost the Igor.')

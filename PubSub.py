@@ -5,26 +5,20 @@ class Publisher():
 	__metaclass__=ABCMeta
 	
 	def add_news(self, channel, news):
-		channel.notify(news)
+		channel.publish(news)
 
 # Абстрактный класс для канала событий	
-# метод register добавляет новых наблюдателей
-# метод detach отцепляет наблюдателя от наблюдаемого объекта
-# метод notify сообщает наблюдателям о новом событии
+# метод publish добавляет новых наблюдателей в комнату
+# метод subscribe сообщает наблюдателям о новом событии
 class EventChannel():
 	__metaclass__=ABCMeta
-	name = 'CommonChat'
 
-	def register(self, subscriber):
-		self.subscribers.append(subscriber)
+	def subscribe(self, nameRoom='CommonChat', subscriber):
+		self.rooms[nameRoome].append(subscriber)
 
-	def detach(self, subscriber):
-		if subscriber in self.subscribers:
-			self.subscribers.remove(subscriber)
-
-	def notify(self, message):
-		for subscriber in self.subscribers:
-			subscriber.update(message + '\nP.s. {}\n{}'.format(self.name, '-'*11))
+	def publish(self, nameRoom='CommonChat', message):
+		for subscriber in self.rooms[nameRoom]:
+			subscriber.update(message + '\nP.s. {}\n{}'.format(nameRoom, '-'*11))
 
 # Абстрактный класс для подписчика
 # имеет метод update, который необходимо обязательно переопределить в наследуемых классах
@@ -48,7 +42,7 @@ class ChatRoom(EventChannel):
 
 	def __init__(self, name):
 		self.name = name
-		self.subscribers = []
+		self.rooms = []
 
 # Класс горожанина и немного информации о нем
 # метод update переопределен
@@ -70,16 +64,13 @@ chatRoomCar = ChatRoom('CarNews')
 maksim = Citizen('Max', 20)
 igor = Citizen('Igor', 20)
 # Подписываем созданных горожан на газету
-chatRoomIT.register(maksim)
-chatRoomCar.register(maksim)
-chatRoomIT.register(igor)
-
+chatRoomIT.subscribe(maksim)
+chatRoomCar.subscribe(maksim)
+chatRoomIT.subscribe(igor)
 
 # Газета добавляет новую новость и сообщает о ней подписчикам
 newspaper.add_news(chatRoomIT, 'Good news came to our city ...')
 newspaper.add_news(chatRoomCar, 'Gasoline has again risen in price.')
-# Один из горожан решил отписаться от газеты
-chatRoomIT.detach(igor)
 
 # Газета добавляет новость о отписке своего подпичсика
 newspaper.add_news(chatRoomIT, 'We lost the Igor.')

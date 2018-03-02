@@ -14,11 +14,14 @@ class EventChannel():
 	__metaclass__=ABCMeta
 
 	def subscribe(self, nameRoom, subscriber):
-		self.rooms[nameRoom].append(subscriber)
+		if nameRoom in self.rooms:
+			self.rooms[nameRoom].append(subscriber)
 
 	def publish(self, nameRoom, message):
-		for subscriber in self.rooms[nameRoom]:
-			subscriber.update(message + '\nP.s. {}\n{}'.format(nameRoom, '-'*11))
+		if nameRoom in self.rooms:
+			for subscriber in self.rooms[nameRoom]:
+				subscriber.update(message + '\nP.s. {}\n{}'.format(nameRoom, '-'*11))
+		
 
 # Абстрактный класс для подписчика
 # имеет метод update, который необходимо обязательно переопределить в наследуемых классах
@@ -70,8 +73,7 @@ chatRoomCar.subscribe(chatRoomCar.nameRoom, maksim)
 chatRoomIT.subscribe(chatRoomIT.nameRoom, igor)
 
 # Газета добавляет новую новость и сообщает о ней подписчикам
-newspaper.add_news(chatRoomIT, chatRoomIT.nameRoom, 'Good news came to our city ...')
+newspaper.add_news(chatRoomIT, 'new', 'Good news came to our city ...')
 newspaper.add_news(chatRoomCar, chatRoomCar.nameRoom, 'Gasoline has again risen in price.')
 
-# Газета добавляет новость о отписке своего подпичсика
 newspaper.add_news(chatRoomIT, chatRoomIT.nameRoom, 'We lost the Igor.')

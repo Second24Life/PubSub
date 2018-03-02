@@ -79,7 +79,7 @@ chatRoomIT.register(igor)
 newspaper.add_news(chatRoomIT, 'Good news came to our city ...')
 newspaper.add_news(chatRoomCar, 'Gasoline has again risen in price.')
 # Один из горожан решил отписаться от газеты
-chatRoom.detach(igor)
+chatRoomIT.detach(igor)
 
 # Газета добавляет новость о отписке своего подпичсика
 newspaper.add_news(chatRoomIT, 'We lost the Igor.')

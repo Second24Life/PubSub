@@ -2,7 +2,7 @@ language: python
 python:
  - "3.6"
 script:
- - python Observer.py
+ - python PubSub.py
 branches:
  only:
  - master
